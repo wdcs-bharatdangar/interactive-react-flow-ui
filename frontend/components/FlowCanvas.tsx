@@ -213,7 +213,7 @@ export default function FlowCanvas() {
         fitView
         minZoom={0.1}
         maxZoom={2}
-        nodesDraggable={true}
+        nodesDraggable={false}
         onNodeClick={(_, node) => handleNodeClick(node.id)}
       >
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
