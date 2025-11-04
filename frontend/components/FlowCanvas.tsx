@@ -37,7 +37,7 @@ const createInitialData = () => {
               id: "dexlyn",
               label: "DEXLYN",
               icon: "🔮",
-              position: { x: -250, y: -200 },
+              position: { x: -500, y: -200 },
               size: 'medium',
               glowColor: '#a855f7',
               children: [
