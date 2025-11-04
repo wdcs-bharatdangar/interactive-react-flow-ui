@@ -133,7 +133,7 @@ export default function FlowCanvas() {
               target: child.id,
               type: "smoothstep",
               animated: true,
-              style: { stroke: "hsl(var(--primary))", strokeWidth: 2 },
+              style: { stroke: "#6366f1", strokeWidth: 3 },
             })
           );
 
