@@ -61,7 +61,7 @@ const createInitialData = () => {
               id: "solido",
               label: "SOLIDO",
               icon: "🌊",
-              position: { x: -100, y: -50 },
+              position: { x: -600, y: -10 },
               size: 'medium',
               glowColor: '#06b6d4',
             },
