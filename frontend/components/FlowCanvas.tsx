@@ -20,32 +20,64 @@ const nodeTypes = {
 
 
 
-// Sample hierarchical data
 const createInitialData = () => {
   return {
     nodes: [
       {
         id: "root",
         type: "circle",
-        position: { x: 400, y: 100 },
+        position: { x: 500, y: 400 },
         data: {
-          label: "Main Node",
+          label: "PoEL",
           isExpanded: false,
+          size: 'large',
+          glowColor: '#1e293b',
           children: [
             {
-              id: "child-1",
-              label: "Child 1",
+              id: "dexlyn",
+              label: "DEXLYN",
+              icon: "🔮",
+              position: { x: -250, y: -200 },
+              size: 'medium',
+              glowColor: '#a855f7',
               children: [
-                { id: "grandchild-1-1", label: "Grandchild 1.1" },
-                { id: "grandchild-1-2", label: "Grandchild 1.2" },
+                { id: "dexlyn-child-1", label: "ISUPRA - IUSDC", icon: "💎", position: { x: -150, y: -150 }, size: 'small', glowColor: '#3b82f6' },
+                { id: "dexlyn-child-2", label: "ISUPRA", icon: "🔴", position: { x: -100, y: -200 }, size: 'small', glowColor: '#ef4444' },
               ],
             },
             {
-              id: "child-2",
-              label: "Child 2",
-              children: [{ id: "grandchild-2-1", label: "Grandchild 2.1" }],
+              id: "evo",
+              label: "EVO",
+              icon: "⚡",
+              position: { x: 0, y: -250 },
+              size: 'medium',
+              glowColor: '#10b981',
+              children: [
+                { id: "evo-child-1", label: "ISUPRA - IUSDC", icon: "💎", position: { x: -100, y: -150 }, size: 'small', glowColor: '#06b6d4' },
+                { id: "evo-child-2", label: "IETH - USDC", icon: "💎", position: { x: 100, y: -150 }, size: 'small', glowColor: '#06b6d4' },
+              ],
             },
-            { id: "child-3", label: "Child 3" },
+            {
+              id: "solido",
+              label: "SOLIDO",
+              icon: "🌊",
+              position: { x: -100, y: -50 },
+              size: 'medium',
+              glowColor: '#06b6d4',
+            },
+            {
+              id: "atmos",
+              label: "ATMOS",
+              icon: "🌀",
+              position: { x: 250, y: -100 },
+              size: 'medium',
+              glowColor: '#14b8a6',
+              children: [
+                { id: "atmos-child-1", label: "ISSVBTC - ISUPRA", icon: "💎", position: { x: 150, y: -150 }, size: 'small', glowColor: '#f59e0b' },
+                { id: "atmos-child-2", label: "IETH - ISUPRA", icon: "💎", position: { x: 100, y: -100 }, size: 'small', glowColor: '#3b82f6' },
+                { id: "atmos-child-3", label: "USDC - ISUPRA", icon: "💎", position: { x: 150, y: -50 }, size: 'small', glowColor: '#ec4899' },
+              ],
+            },
           ],
         } as CircleNodeData,
       },
@@ -104,26 +136,34 @@ export default function FlowCanvas() {
                 : n
             );
         } else {
-          // Expand: add child nodes in circular arrangement
-          const childCount = nodeData.children.length;
-          const radius = 250;
-          const centerX = clickedNode.position.x;
-          const centerY = clickedNode.position.y;
-          const angleStep = (2 * Math.PI) / childCount;
-          const startAngle = -Math.PI / 2;
-
           const newNodes: Node[] = nodeData.children.map(
             (child, index) => {
-              const angle = startAngle + index * angleStep;
+              let position;
+              if (child.position) {
+                position = {
+                  x: clickedNode.position.x + child.position.x,
+                  y: clickedNode.position.y + child.position.y,
+                };
+              } else {
+                const spacing = 200;
+                const childCount = nodeData.children?.length || 0;
+                const totalWidth = (childCount - 1) * spacing;
+                const startX = clickedNode.position.x - totalWidth / 2;
+                position = {
+                  x: startX + index * spacing,
+                  y: clickedNode.position.y - 200,
+                };
+              }
+              
               return {
                 id: child.id,
                 type: "circle",
-                position: {
-                  x: centerX + radius * Math.cos(angle),
-                  y: centerY + radius * Math.sin(angle),
-                },
+                position,
                 data: {
                   label: child.label,
+                  icon: child.icon,
+                  size: child.size,
+                  glowColor: child.glowColor,
                   isExpanded: false,
                   children: child.children,
                 } as CircleNodeData,
@@ -136,9 +176,13 @@ export default function FlowCanvas() {
               id: `${nodeId}-${child.id}`,
               source: nodeId,
               target: child.id,
-              type: "smoothstep",
-              animated: true,
-              style: { stroke: "#6366f1", strokeWidth: 3 },
+              type: "straight",
+              animated: false,
+              style: { 
+                stroke: child.glowColor || '#06b6d4',
+                strokeWidth: 2,
+                opacity: 0.6
+              },
             })
           );
 
@@ -169,7 +213,7 @@ export default function FlowCanvas() {
         fitView
         minZoom={0.1}
         maxZoom={2}
-        nodesDraggable={false}
+        nodesDraggable={true}
         onNodeClick={(_, node) => handleNodeClick(node.id)}
       >
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
