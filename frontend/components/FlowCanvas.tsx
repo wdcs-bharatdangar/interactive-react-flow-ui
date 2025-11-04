@@ -104,26 +104,31 @@ export default function FlowCanvas() {
                 : n
             );
         } else {
-          // Expand: add child nodes
+          // Expand: add child nodes in circular arrangement
           const childCount = nodeData.children.length;
-          const spacing = 200;
-          const totalWidth = (childCount - 1) * spacing;
-          const startX = clickedNode.position.x - totalWidth / 2;
+          const radius = 250;
+          const centerX = clickedNode.position.x;
+          const centerY = clickedNode.position.y;
+          const angleStep = (2 * Math.PI) / childCount;
+          const startAngle = -Math.PI / 2;
 
           const newNodes: Node[] = nodeData.children.map(
-            (child, index) => ({
-              id: child.id,
-              type: "circle",
-              position: {
-                x: startX + index * spacing,
-                y: clickedNode.position.y + 200,
-              },
-              data: {
-                label: child.label,
-                isExpanded: false,
-                children: child.children,
-              } as CircleNodeData,
-            })
+            (child, index) => {
+              const angle = startAngle + index * angleStep;
+              return {
+                id: child.id,
+                type: "circle",
+                position: {
+                  x: centerX + radius * Math.cos(angle),
+                  y: centerY + radius * Math.sin(angle),
+                },
+                data: {
+                  label: child.label,
+                  isExpanded: false,
+                  children: child.children,
+                } as CircleNodeData,
+              };
+            }
           );
 
           const newEdges: Edge[] = nodeData.children.map(
@@ -164,7 +169,7 @@ export default function FlowCanvas() {
         fitView
         minZoom={0.1}
         maxZoom={2}
-        nodesDraggable={true}
+        nodesDraggable={false}
         onNodeClick={(_, node) => handleNodeClick(node.id)}
       >
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
